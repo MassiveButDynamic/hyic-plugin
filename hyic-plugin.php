@@ -3,6 +3,7 @@
  * Plugin Name: HYIC-Plugin
  */
 
+
 function hyic_setup_post_type() {
     register_post_type('hyic_project',
         array(
@@ -25,7 +26,7 @@ function hyic_add_custom_box()
     foreach ($screens as $screen) {
         add_meta_box(
             'hyic_test_box',           // Unique ID
-            'Eine tolle neue meta box',  // Box title
+            'Farben',  // Box title
             'wporg_custom_box_html',  // Content callback, must be of type callable
             $screen                   // Post type
         );
@@ -35,15 +36,24 @@ add_action('add_meta_boxes', 'hyic_add_custom_box');
  
 function wporg_custom_box_html($post)
 {
+    $value = get_post_meta($post->ID, '_hyic_project_tile_color', true);
     ?>
-    <label for="wporg_field">Eine ganz tolle meta box</label>
-    <select name="wporg_field" id="wporg_field" class="postbox">
-        <option value="">Select something...</option>
-        <option value="something">Something</option>
-        <option value="else">Else</option>
-    </select>
+    <label for="hyic_project_tile_color">Farbe der Kachel:</label>
+    <input type="color" name='hyic_project_tile_color' value="<?php echo $value;?>" />
     <?php
 }
+
+function wporg_save_postdata($post_id)
+{
+    if (array_key_exists('hyic_project_tile_color', $_POST)) {
+        update_post_meta(
+            $post_id,
+            '_hyic_project_tile_color',
+            $_POST['hyic_project_tile_color']
+        );
+    }
+}
+add_action('save_post', 'wporg_save_postdata');
  
 /**
  * Activate the plugin.
