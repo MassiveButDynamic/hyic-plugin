@@ -7,7 +7,7 @@ function hyic_setup_event_type() {
                 'name'          => __('Events', 'textdomain'),
                 'singular_name' => __('Event', 'textdomain'),
             ),
-            'supports' => array('title', 'editor', 'excerpt'),
+            'supports' => array('title', 'editor', 'excerpt', 'thumbnail'),
             'public'      => true,
             'has_archive' => true,
             'menu_icon'=>'dashicons-calendar-alt',
