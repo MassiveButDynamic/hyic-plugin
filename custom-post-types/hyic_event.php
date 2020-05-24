@@ -33,11 +33,23 @@ add_action('add_meta_boxes', 'hyic_add_event_dates_box');
  
 function hyic_event_dates_box_html($post)
 {
-    $eventDate = get_post_meta($post->ID, '_hyic_event_date', true);
+    $isAllDay = get_post_meta($post->ID, '_hyic_event_all_day', true);
+    $eventStartDate = get_post_meta($post->ID, '_hyic_event_start_date', true);
+    $eventStartTime = get_post_meta($post->ID, '_hyic_event_start_time', true);
+    $eventEndDate = get_post_meta($post->ID, '_hyic_event_end_date', true);
+    $eventEndTime = get_post_meta($post->ID, '_hyic_event_end_time', true);
     $registrationDeadline = get_post_meta($post->ID, '_hyic_event_registration_deadline', true);
+
     ?>
-    <label for="hyic_event_date">Tag des Events:</label>
-    <input type="date" name='hyic_event_date' value="<?php echo $eventDate;?>" /><br>
+    <input type='checkbox' name='hyic_event_all_day' value="true" <?php if($isAllDay=='true'){ echo 'checked';}?>>
+    <label>Ganztägig</label><br>
+    <label>Zeitraum des Events:</label><br>
+    
+    <label for="hyic_event_date">Von:</label>
+    <input type="date" name='hyic_event_start_date' value="<?php echo $eventStartDate;?>" /><input type="time" name='hyic_event_start_time' value="<?php echo $eventStartTime;?>" /><br>
+    <label for="hyic_event_date">Bis:</label>
+    <input type="date" name='hyic_event_end_date' value="<?php echo $eventEndDate;?>" /><input type="time" name='hyic_event_end_time' value="<?php echo $eventEndTime;?>" /><br>
+    
     <label for="hyic_event_deadline">Anmeldefrist:</label>
     <input type="date" name='hyic_event_deadline' value="<?php echo $registrationDeadline;?>" />
     <?php
@@ -71,11 +83,37 @@ function hyic_event_registration_box_html($post)
 
 function hyic_event_save_postdata($post_id)
 {
-    if (array_key_exists('hyic_event_date', $_POST)) {
+    update_post_meta(
+        $post_id,
+        '_hyic_event_all_day',
+        $_POST['hyic_event_all_day']
+    );
+    if (array_key_exists('hyic_event_start_date', $_POST)) {
         update_post_meta(
             $post_id,
-            '_hyic_event_date',
-            $_POST['hyic_event_date']
+            '_hyic_event_start_date',
+            $_POST['hyic_event_start_date']
+        );
+    }
+    if (array_key_exists('hyic_event_start_time', $_POST)) {
+        update_post_meta(
+            $post_id,
+            '_hyic_event_start_time',
+            $_POST['hyic_event_start_time']
+        );
+    }
+    if (array_key_exists('hyic_event_end_date', $_POST)) {
+        update_post_meta(
+            $post_id,
+            '_hyic_event_end_date',
+            $_POST['hyic_event_end_date']
+        );
+    }
+    if (array_key_exists('hyic_event_end_time', $_POST)) {
+        update_post_meta(
+            $post_id,
+            '_hyic_event_end_time',
+            $_POST['hyic_event_end_time']
         );
     }
     if (array_key_exists('hyic_event_deadline', $_POST)) {
