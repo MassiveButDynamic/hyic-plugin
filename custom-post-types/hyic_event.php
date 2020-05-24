@@ -59,8 +59,11 @@ add_action('add_meta_boxes', 'hyic_add_event_registration_box');
  
 function hyic_event_registration_box_html($post)
 {
+    $registrationActive = get_post_meta($post->ID, '_hyic_event_registration_active', true);
     $registrationLink = get_post_meta($post->ID, '_hyic_event_registration_link', true);
     ?>
+    <input type='checkbox' name='hyic_event_registration_active' value="true" <?php if($registrationActive=='true'){ echo 'checked';}?>>
+    <label>Anmeldung möglich</label><br><br>
     <label for="hyic_event_registration_link">Link zur Registrierung (über z.B. Eventbrite):</label><br><br>
     <input type="text" name='hyic_event_registration_link' value="<?php echo $registrationLink;?>" style='width: 100%'/>
     <?php
@@ -82,6 +85,11 @@ function hyic_event_save_postdata($post_id)
             $_POST['hyic_event_deadline']
         );
     }
+    update_post_meta(
+        $post_id,
+        '_hyic_event_registration_active',
+        $_POST['hyic_event_registration_active']
+    );
     if (array_key_exists('hyic_event_registration_link', $_POST)) {
         update_post_meta(
             $post_id,
