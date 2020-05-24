@@ -8,8 +8,9 @@ function hyic_setup_project_type() {
                 'singular_name' => __('Projekt', 'textdomain'),
             ),
             'supports' => array('title', 'editor', 'thumbnail', 'excerpt'),
-                'public'      => true,
-                'has_archive' => true,
+            'public'      => true,
+            'has_archive' => true,
+            'menu_icon'=>'dashicons-portfolio',
         )
     );
 } 

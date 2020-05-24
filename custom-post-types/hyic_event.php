@@ -8,8 +8,9 @@ function hyic_setup_event_type() {
                 'singular_name' => __('Event', 'textdomain'),
             ),
             'supports' => array('title', 'editor', 'excerpt'),
-                'public'      => true,
-                'has_archive' => true,
+            'public'      => true,
+            'has_archive' => true,
+            'menu_icon'=>'dashicons-calendar-alt',
         )
     );
 } 
