@@ -1,0 +1,20 @@
+on: 
+  push:
+    branches: 
+      - master
+
+jobs:
+  deploy_job:
+    runs-on: ubuntu-latest
+    name: deploy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: deploy file
+        uses: wangyucode/sftp-upload-action@v1.1
+        with:
+          username: 'u100563475-julian'
+          host: 'access823494593.webspace-data.io'
+          password: ${{ secrets.SSH_PRIVATE_KEY }} 
+          localDir: './'
+          remoteDir: '/wordpress/wp-content/plugins/hyic-plugin'
