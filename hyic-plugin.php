@@ -3,21 +3,21 @@
  * Plugin Name: HYIC-Plugin
  */
 
-include_once(dirname(__FILE__).'/custom-post-types/hyic_project.php');
+//include_once(dirname(__FILE__).'/custom-post-types/hyic_project.php');
 include_once(dirname(__FILE__).'/custom-post-types/hyic_event.php');
-include_once(dirname(__FILE__).'/custom-post-types/hyic_partner.php');
+//include_once(dirname(__FILE__).'/custom-post-types/hyic_partner.php');
  
 
 function hyic_setup_post_types() {
-    hyic_setup_project_type();
+    //hyic_setup_project_type();
     hyic_setup_event_type();
-    hyic_setup_partner_type();
+    //hyic_setup_partner_type();
 }
 
 function hyic_unregister_post_types() {
-    unregister_post_type('hyic_project');
+    //unregister_post_type('hyic_project');
     unregister_post_type('hyic_event');
-    unregister_post_type('hyic_partner');
+    //unregister_post_type('hyic_partner');
 }
 
 /**
