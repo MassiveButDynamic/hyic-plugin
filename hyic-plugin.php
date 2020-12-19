@@ -148,7 +148,7 @@ function gutenberg_examples_dynamic_render_callback( $block_attributes, $content
             esc_url( get_permalink( $post['ID'] ) ),
         );
     }
-    $result .= '/<div>';
+    $result .= '</div>';
 
     return $result;
 }
