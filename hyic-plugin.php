@@ -128,18 +128,18 @@ function gutenberg_examples_dynamic_render_callback( $block_attributes, $content
 
         $result .= sprintf(
             "<div class='hyic-event-card'>
-                        <div class='hyic-event-card-image-wrapper'>
-                            <img src='%s'></img>
-                        </div>
-                        <div class='hyic-event-card-text-wrapper'>
-                            <span class='hyic-event-card-title'> %s </span>
-                            <span class='hyic-event-card-time'> %s </span>
-                            <span class='hyic-event-card-deadline'>Anmeldung bis: %s </span>
-                        </div>
-                        <a class='hyic-event-card-button' href=' %s '>
-                            <span>Jetzt anmelden</span>
-                        </a>
-                    </div>
+                <div class='hyic-event-card-image-wrapper'>
+                    <img src='%s'></img>
+                </div>
+                <div class='hyic-event-card-text-wrapper'>
+                    <span class='hyic-event-card-title'> %s </span>
+                    <span class='hyic-event-card-time'> %s </span>
+                    <span class='hyic-event-card-deadline'>Anmeldung bis: %s </span>
+                </div>
+                <a class='hyic-event-card-button' href=' %s '>
+                    <span>Jetzt anmelden</span>
+                </a>
+            </div>
             ",
             wp_get_attachment_image_url( get_post_thumbnail_id( $post['ID'] ), 'post-thumbnail' ),
             esc_html( get_the_title( $post['ID'] ) ),

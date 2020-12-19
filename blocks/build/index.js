@@ -163,7 +163,9 @@ Object(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_1__["registerBlockType"])('hyi
       }
     }
 
-    return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("div", blockProps, !posts && 'Lade Events...', posts && posts.length === 0 && 'Keine Events', postElements);
+    return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("div", blockProps, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("div", {
+      class: "hyic-event-carousel-wrapper"
+    }, !posts && 'Lade Events...', posts && posts.length === 0 && 'Keine Events', postElements));
   }) //save: () => <div>Hello world</div>,
 
 });

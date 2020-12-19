@@ -40,9 +40,11 @@ registerBlockType( 'hyic/events-carousel', {
     
         return (
             <div { ...blockProps }>
-                { ! posts && 'Lade Events...' }
-                { posts && posts.length === 0 && 'Keine Events' }
-                {postElements}
+                <div class='hyic-event-carousel-wrapper'>
+                    { ! posts && 'Lade Events...' }
+                    { posts && posts.length === 0 && 'Keine Events' }
+                    {postElements}
+                </div>
             </div>
         )
     
