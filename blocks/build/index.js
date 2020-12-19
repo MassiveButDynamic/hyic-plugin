@@ -162,6 +162,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+
 
 
 
@@ -213,13 +220,68 @@ Object(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_3__["registerBlockType"])('hyi
   })(function (_ref) {
     var posts = _ref.posts;
     var blockProps = Object(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__["useBlockProps"])();
+    var postElements = [];
+    var MAX_NUMBER_OF_EVENTS = 3;
+
+    if (posts) {
+      var _iterator = _createForOfIteratorHelper(posts.slice(0, MAX_NUMBER_OF_EVENTS)),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var p = _step.value;
+          var eventDateString = assembleEventDateString(p);
+          var eventDeadlineString = new Date(p._hyic_event_registration_deadline).toLocaleDateString();
+          postElements.push(Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("div", {
+            class: "hyic-event-card"
+          }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("div", {
+            class: "hyic-event-card-image-wrapper"
+          }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("img", {
+            src: p.thumbnail_url
+          })), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("div", {
+            class: "hyic-event-card-text-wrapper"
+          }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("span", {
+            class: "hyic-event-card-title"
+          }, p.title.rendered), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("span", {
+            class: "hyic-event-card-time"
+          }, eventDateString), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("span", {
+            class: "hyic-event-card-deadline"
+          }, "Anmeldung bis: ", eventDeadlineString)), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("a", {
+            class: "hyic-event-card-button",
+            href: p.link
+          }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("span", null, "Jetzt anmelden"))));
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+    }
+
     console.log(posts);
-    return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("div", blockProps, !posts && 'Loading', posts && posts.length === 0 && 'No Posts', posts && posts.length > 0 && Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("a", {
-      href: posts[0].link
-    }, posts[0].title.rendered));
+    return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("div", blockProps, !posts && 'Lade Events...', posts && posts.length === 0 && 'Keine Events', postElements);
   }) //save: () => <div>Hello world</div>,
 
 });
+
+function assembleEventDateString(event) {
+  var start = new Date(event._hyic_event_start_date + ' ' + event._hyic_event_start_time);
+  var end = new Date(event._hyic_event_end_date + ' ' + event._hyic_event_end_time);
+
+  if (event._hyic_event_all_day == 'true') {
+    if (event._hyic_event_start_date == event._hyic_event_end_date) {
+      return "Am ".concat(start.toLocaleDateString());
+    } else {
+      return "Vom ".concat(start.toLocaleDateString(), " bis ").concat(end.toLocaleDateString());
+    }
+  } else {
+    if (event._hyic_event_start_date == event._hyic_event_end_date) {
+      return "Am ".concat(start.toLocaleDateString(), " von ").concat(event._hyic_event_start_time, " bis ").concat(event._hyic_event_end_time, " Uhr");
+    } else {
+      return "Von ".concat(start.toLocaleDateString(), " ").concat(event._hyic_event_start_time, " Uhr bis ").concat(end.toLocaleDateString(), " ").concat(event._hyic_event_end_time, " Uhr");
+    }
+  }
+}
 
 /***/ }),
 

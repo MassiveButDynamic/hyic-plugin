@@ -208,6 +208,14 @@ function add_hyic_event_rest_fields() {
             'schema'            => null,
         )
     );
+    register_rest_field( 'hyic_event',
+        'thumbnail_url',
+        array(
+            'get_callback'  => 'get_hyic_event_thumbnail_url',
+            'update_callback'   => null,
+            'schema'            => null,
+        )
+    );
 }
 add_action( 'rest_api_init', 'add_hyic_event_rest_fields' );
 
@@ -215,4 +223,14 @@ function rest_get_post_field( $post, $field_name, $request ) {
     return get_post_meta( $post[ 'id' ], $field_name, true );
 }
 
+function get_hyic_event_thumbnail_url( $post = null ) {
+    $size = 'post-thumbnail';
+    $post_thumbnail_id = get_post_thumbnail_id( $post['id'] );
+ 
+    if ( ! $post_thumbnail_id ) {
+        return '';
+    }
+ 
+    return wp_get_attachment_image_url( $post_thumbnail_id, $size );
+}
 ?>
