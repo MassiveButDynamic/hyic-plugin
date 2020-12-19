@@ -11,6 +11,9 @@ function hyic_setup_event_type() {
             'public'      => true,
             'has_archive' => true,
             'menu_icon'=>'dashicons-calendar-alt',
+            'show_in_rest' => true,
+            'rest_controller_class' => 'WP_REST_Posts_Controller',
+            'rest_base'             => 'hyic_events',
         )
     );
 } 
@@ -138,4 +141,96 @@ function hyic_event_save_postdata($post_id)
 }
 add_action('save_post', 'hyic_event_save_postdata');
 
+
+// MODIFY REST-CONTROLLER
+function add_hyic_event_rest_fields() {
+    register_rest_field( 'hyic_event',
+        '_hyic_event_all_day',
+        array(
+            'get_callback'  => 'rest_get_post_field',
+            'update_callback'   => null,
+            'schema'            => null,
+        )
+    );
+    register_rest_field( 'hyic_event',
+        '_hyic_event_start_date',
+        array(
+            'get_callback'  => 'rest_get_post_field',
+            'update_callback'   => null,
+            'schema'            => null,
+        )
+    );
+    register_rest_field( 'hyic_event',
+        '_hyic_event_start_time',
+        array(
+            'get_callback'  => 'rest_get_post_field',
+            'update_callback'   => null,
+            'schema'            => null,
+        )
+    );
+    register_rest_field( 'hyic_event',
+        '_hyic_event_end_date',
+        array(
+            'get_callback'  => 'rest_get_post_field',
+            'update_callback'   => null,
+            'schema'            => null,
+        )
+    );
+    register_rest_field( 'hyic_event',
+        '_hyic_event_end_time',
+        array(
+            'get_callback'  => 'rest_get_post_field',
+            'update_callback'   => null,
+            'schema'            => null,
+        )
+    );
+    register_rest_field( 'hyic_event',
+        '_hyic_event_registration_deadline',
+        array(
+            'get_callback'  => 'rest_get_post_field',
+            'update_callback'   => null,
+            'schema'            => null,
+        )
+    );
+    register_rest_field( 'hyic_event',
+        '_hyic_event_registration_active',
+        array(
+            'get_callback'  => 'rest_get_post_field',
+            'update_callback'   => null,
+            'schema'            => null,
+        )
+    );
+    register_rest_field( 'hyic_event',
+        '_hyic_event_registration_link',
+        array(
+            'get_callback'  => 'rest_get_post_field',
+            'update_callback'   => null,
+            'schema'            => null,
+        )
+    );
+    register_rest_field( 'hyic_event',
+        'thumbnail_url',
+        array(
+            'get_callback'  => 'get_hyic_event_thumbnail_url',
+            'update_callback'   => null,
+            'schema'            => null,
+        )
+    );
+}
+add_action( 'rest_api_init', 'add_hyic_event_rest_fields' );
+
+function rest_get_post_field( $post, $field_name, $request ) {
+    return get_post_meta( $post[ 'id' ], $field_name, true );
+}
+
+function get_hyic_event_thumbnail_url( $post = null ) {
+    $size = 'post-thumbnail';
+    $post_thumbnail_id = get_post_thumbnail_id( $post['id'] );
+ 
+    if ( ! $post_thumbnail_id ) {
+        return '';
+    }
+ 
+    return wp_get_attachment_image_url( $post_thumbnail_id, $size );
+}
 ?>
