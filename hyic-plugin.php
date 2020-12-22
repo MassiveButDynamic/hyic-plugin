@@ -114,15 +114,15 @@ function gutenberg_examples_dynamic_render_callback( $block_attributes, $content
 
         if($isAllDay) {
             if($startDateString == $endDateString) {
-                $dateString = 'Am '.date_format($startDate, 'd.m.Y');
+                $dateString = date_format($startDate, 'd.m.Y');
             } else {
-                $dateString = 'Vom '.date_format($startDate, 'd.m.').' bis '.date_format($endDate, 'd.m.Y');
+                $dateString = date_format($startDate, 'd.m.').' - '.date_format($endDate, 'd.m.Y');
             }
         } else {
             if($startDateString == $endDateString) {
-                $dateString = 'Am '.date_format($startDate, 'd.m.Y').' von '.date_format($startDate, 'H:i').' bis '.date_format($endDate, 'H:i').' Uhr';
+                $dateString = date_format($startDate, 'd.m.Y').', '.date_format($startDate, 'H:i').' bis '.date_format($endDate, 'H:i').' Uhr';
             } else {
-                $dateString = 'Von '.date_format($startDate, 'd.m.Y H:i').' Uhr bis '.date_format($endDate, 'd.m.Y H:i').' Uhr';
+                $dateString = date_format($startDate, 'd.m.Y H:i').' Uhr - '.date_format($endDate, 'd.m.Y H:i').' Uhr';
             }
         }
 
@@ -134,7 +134,7 @@ function gutenberg_examples_dynamic_render_callback( $block_attributes, $content
                 <div class='hyic-event-card-text-wrapper'>
                     <span class='hyic-event-card-title'> %s </span>
                     <span class='hyic-event-card-time'> %s </span>
-                    <span class='hyic-event-card-deadline'>Anmeldung bis: %s </span>
+                    <span class='hyic-event-card-deadline'><span>Anmeldung bis:</span><br><span class='date'>%s</span> </span>
                 </div>
                 <a class='hyic-event-card-button' href=' %s '>
                     <span>Jetzt anmelden</span>
@@ -148,7 +148,7 @@ function gutenberg_examples_dynamic_render_callback( $block_attributes, $content
             esc_url( get_permalink( $post['ID'] ) ),
         );
     }
-    $result .= '</div>';
+    $result .= '<div class="show-all-hyic-events"><a class="button" href="events">Alle Events ansehen</a></div></div>';
 
     return $result;
 }
