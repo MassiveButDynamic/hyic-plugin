@@ -129,7 +129,7 @@ function gutenberg_examples_dynamic_render_callback( $block_attributes, $content
         $result .= sprintf(
             "<div class='hyic-event-card'>
                 <div class='hyic-event-card-image-wrapper'>
-                    <img src='%s'></img>
+                    <img src='%s' alt='Vorschaubild des Events %s'></img>
                 </div>
                 <div class='hyic-event-card-text-wrapper'>
                     <span class='hyic-event-card-title'> %s </span>
@@ -142,6 +142,7 @@ function gutenberg_examples_dynamic_render_callback( $block_attributes, $content
             </div>
             ",
             wp_get_attachment_image_url( get_post_thumbnail_id( $post['ID'] ), 'post-thumbnail' ),
+            esc_html( get_the_title( $post['ID'] ) ),
             esc_html( get_the_title( $post['ID'] ) ),
             $dateString,
             date_format($registrationDeadline, 'd.m.Y'),
