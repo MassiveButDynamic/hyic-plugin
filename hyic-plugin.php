@@ -5,6 +5,7 @@
 
 //include_once(dirname(__FILE__).'/custom-post-types/hyic_project.php');
 include_once(dirname(__FILE__).'/custom-post-types/hyic_event.php');
+include_once(dirname(__FILE__).'/customizer.php');
 //include_once(dirname(__FILE__).'/custom-post-types/hyic_partner.php');
  
 
