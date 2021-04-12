@@ -100,14 +100,17 @@ function gutenberg_examples_dynamic_render_callback( $block_attributes, $content
     );
     $loop = new WP_Query($args);
     
-    function order_events_by_startdate($a, $b) {
-        $aStart = new DateTime(get_post_custom_values('_hyic_event_start_date', $a->ID)[0]);
-        $bStart = new DateTime(get_post_custom_values('_hyic_event_start_date', $b->ID)[0]);
+    function order_events_by_registration_deadline($a, $b) {
+        $today = new DateTime('today');
+        $aReg = new DateTime(get_post_custom_values('_hyic_event_registration_deadline', $a->ID)[0]);
+        $bReg = new DateTime(get_post_custom_values('_hyic_event_registration_deadline', $b->ID)[0]);
     
-        return ($aStart>$bStart) ? -1 : 1;
+        if($aReg > $today && $bReg > $today) return ($aReg<$bReg) ? -1 : 1;
+        else if($aReg < $today && $bReg < $today) return ($aReg>$bReg) ? -1 : 1;
+        else return ($aReg > $today) ? -1 : 1;
     }
     
-    usort($loop->posts, 'order_events_by_startdate');
+    usort($loop->posts, 'order_events_by_registration_deadline');
     $recent_posts = array_slice($loop->posts, 0, 3);
 
     if ( count( $recent_posts ) === 0 ) {
