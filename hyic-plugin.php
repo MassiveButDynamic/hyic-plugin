@@ -122,30 +122,8 @@ function gutenberg_examples_dynamic_render_callback( $block_attributes, $content
 
         $registrationDeadline = date_create(get_post_meta( $post->ID, '_hyic_event_registration_deadline', true ));
         
-        $isAllDay = get_post_meta( $post->ID, '_hyic_event_all_day', true )=='true';
-        $startDateString = get_post_meta( $post->ID, '_hyic_event_start_date', true );
-        $startTimeString = get_post_meta( $post->ID, '_hyic_event_start_time', true );
-        $endDateString = get_post_meta( $post->ID, '_hyic_event_end_date', true );
-        $endTimeString = get_post_meta( $post->ID, '_hyic_event_end_time', true );
-
-        $startDate = date_create($startDateString.' '.$startTimeString);
-        $endDate = date_create($endDateString.' '.$endTimeString);
-
         $dateString = '';
-
-        if($isAllDay) {
-            if($startDateString == $endDateString) {
-                $dateString = date_format($startDate, 'd.m.Y');
-            } else {
-                $dateString = date_format($startDate, 'd.m.').' - '.date_format($endDate, 'd.m.Y');
-            }
-        } else {
-            if($startDateString == $endDateString) {
-                $dateString = date_format($startDate, 'd.m.Y').', '.date_format($startDate, 'H:i').' bis '.date_format($endDate, 'H:i').' Uhr';
-            } else {
-                $dateString = date_format($startDate, 'd.m.Y H:i').' Uhr - '.date_format($endDate, 'd.m.Y H:i').' Uhr';
-            }
-        }
+        $dateString = apply_filters('hyic_assemble_event_date_string', $post->ID, false);
 
         $result .= sprintf(
             "<div class='hyic-event-card'>
@@ -176,4 +154,50 @@ function gutenberg_examples_dynamic_render_callback( $block_attributes, $content
 
     return $result;
 }
+
+/**
+ * $postID The event's postID
+ * $singleEventPage If this should be a string for the tl;dr section of a single-event page
+ */
+function assemble_hyic_event_date_string($postID, $singleEventPage) {
+    $result = '';
+
+    $today = new DateTime('today');
+
+    $eventIsAllDay = get_post_meta( $postID, '_hyic_event_all_day', true )=='true';
+    $eventStartDate = get_post_meta( $postID, '_hyic_event_start_date', true );
+    $eventStartTime = get_post_meta( $postID, '_hyic_event_start_time', true );
+    $eventEndDate = get_post_meta( $postID, '_hyic_event_end_date', true );
+    $eventEndTime = get_post_meta( $postID, '_hyic_event_end_time', true );
+
+    $startDate = date_create($eventStartDate.' '.$eventStartTime);
+    $endDate = date_create($eventEndDate.' '.$eventEndTime);
+
+    if($singleEventPage) {
+        if($endDate<$today) $result .= ' fand ';
+        else $result .= ' findet ';
+
+        if($eventStartDate==$eventEndDate) $result .= 'am ';
+        else $result .= 'vom ';
+    }   
+
+    if($eventIsAllDay) {
+        if($eventStartDate == $eventEndDate) {
+            $result .= date_format($startDate, 'd.m.Y');
+        } else {
+            $result .= date_format($startDate, 'd.m.').($singleEventPage ? ' bis zum ' : ' - ').date_format($endDate, 'd.m.Y');
+        }
+    } else {
+        if($eventStartDate == $eventEndDate) {
+            $result .= date_format($startDate, 'd.m.Y').($singleEventPage ? ' von ' : ', ').date_format($startDate, 'H:i').' bis '.date_format($endDate, 'H:i').' Uhr';
+        } else {
+            $result .= date_format($startDate, 'd.m. H:i').($singleEventPage ? ' Uhr bis zum ': ' Uhr - ').date_format($endDate, 'd.m.Y H:i').' Uhr';
+        }
+    }
+    
+    
+    return $result;
+}
+add_filter('hyic_assemble_event_date_string', 'assemble_hyic_event_date_string', 10, 2);
+
 ?>
