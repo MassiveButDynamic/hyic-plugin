@@ -89,23 +89,41 @@ function create_block_hyic_blocks_init() {
 add_action( 'init', 'create_block_hyic_blocks_init' );
 
 function gutenberg_examples_dynamic_render_callback( $block_attributes, $content ) {
-    $recent_posts = wp_get_recent_posts( array(
-        'numberposts' => 3,
-        'post_status' => 'publish',
-        'post_type' => 'hyic_event'
-    ) );
+    // $recent_posts = wp_get_recent_posts( array(
+    //     'numberposts' => 3,
+    //     'post_status' => 'publish',
+    //     'post_type' => 'hyic_event'
+    // ) );
+    $args = array(
+        'post_type'      => 'hyic_event',
+        'posts_per_page' => -1
+    );
+    $loop = new WP_Query($args);
+    
+    function order_events_by_startdate($a, $b) {
+        $aStart = new DateTime(get_post_custom_values('_hyic_event_start_date', $a->ID)[0]);
+        $bStart = new DateTime(get_post_custom_values('_hyic_event_start_date', $b->ID)[0]);
+    
+        return ($aStart>$bStart) ? -1 : 1;
+    }
+    
+    usort($loop->posts, 'order_events_by_startdate');
+    $recent_posts = array_slice($loop->posts, 0, 3);
+
     if ( count( $recent_posts ) === 0 ) {
         return 'No posts';
     }
     $result = '<div class="hyic-event-carousel-wrapper">';
     foreach($recent_posts as $post) {
-        $registrationDeadline = date_create(get_post_meta( $post[ 'ID' ], '_hyic_event_registration_deadline', true ));
+        $today = new DateTime('today');
+
+        $registrationDeadline = date_create(get_post_meta( $post->ID, '_hyic_event_registration_deadline', true ));
         
-        $isAllDay = get_post_meta( $post[ 'ID' ], '_hyic_event_all_day', true )=='true';
-        $startDateString = get_post_meta( $post[ 'ID' ], '_hyic_event_start_date', true );
-        $startTimeString = get_post_meta( $post[ 'ID' ], '_hyic_event_start_time', true );
-        $endDateString = get_post_meta( $post[ 'ID' ], '_hyic_event_end_date', true );
-        $endTimeString = get_post_meta( $post[ 'ID' ], '_hyic_event_end_time', true );
+        $isAllDay = get_post_meta( $post->ID, '_hyic_event_all_day', true )=='true';
+        $startDateString = get_post_meta( $post->ID, '_hyic_event_start_date', true );
+        $startTimeString = get_post_meta( $post->ID, '_hyic_event_start_time', true );
+        $endDateString = get_post_meta( $post->ID, '_hyic_event_end_date', true );
+        $endTimeString = get_post_meta( $post->ID, '_hyic_event_end_time', true );
 
         $startDate = date_create($startDateString.' '.$startTimeString);
         $endDate = date_create($endDateString.' '.$endTimeString);
@@ -136,17 +154,19 @@ function gutenberg_examples_dynamic_render_callback( $block_attributes, $content
                     <span class='hyic-event-card-time'> %s </span>
                     <span class='hyic-event-card-deadline'><span>Anmeldung bis:</span><br><span class='date'>%s</span> </span>
                 </div>
-                <a class='hyic-event-card-button' href=' %s '>
-                    <span>Jetzt anmelden</span>
+                <a class='hyic-event-card-button%s' href=' %s '>
+                    <span>%s</span>
                 </a>
             </div>
             ",
-            wp_get_attachment_image_url( get_post_thumbnail_id( $post['ID'] ), 'post-thumbnail' ),
-            esc_html( get_the_title( $post['ID'] ) ),
-            esc_html( get_the_title( $post['ID'] ) ),
+            wp_get_attachment_image_url( get_post_thumbnail_id( $post->ID ), 'post-thumbnail' ),
+            esc_html( get_the_title( $post->ID ) ),
+            esc_html( get_the_title( $post->ID ) ),
             $dateString,
             date_format($registrationDeadline, 'd.m.Y'),
-            esc_url( get_permalink( $post['ID'] ) ),
+            ($today > $registrationDeadline) ? ' more-info' : '',
+            esc_url( get_permalink( $post->ID ) ),
+            ($today > $registrationDeadline) ? 'Mehr erfahren' : 'Jetzt anmelden'
         );
     }
     $result .= '<div class="show-all-hyic-events"><a class="button" href="events">Alle Events ansehen</a></div></div>';
