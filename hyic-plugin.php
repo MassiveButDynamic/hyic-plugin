@@ -88,6 +88,20 @@ function create_block_hyic_blocks_init() {
 }
 add_action( 'init', 'create_block_hyic_blocks_init' );
 
+function order_events_by_registration_deadline($a, $b) {
+    $today = new DateTime('today');
+
+    $aRegRaw = get_post_custom_values('_hyic_event_registration_deadline', $a->ID);
+    $aReg = new DateTime($aRegRaw ? $aRegRaw[0] : 'today');
+
+    $bRegRaw = get_post_custom_values('_hyic_event_registration_deadline', $b->ID);
+    $bReg = new DateTime($bRegRaw? $bRegRaw[0] : 'today');
+
+    if($aReg > $today && $bReg > $today) return ($aReg<$bReg) ? -1 : 1;
+    else if($aReg < $today && $bReg < $today) return ($aReg>$bReg) ? -1 : 1;
+    else return ($aReg > $today) ? -1 : 1;
+}
+
 function gutenberg_examples_dynamic_render_callback( $block_attributes, $content ) {
     // $recent_posts = wp_get_recent_posts( array(
     //     'numberposts' => 3,
@@ -99,16 +113,6 @@ function gutenberg_examples_dynamic_render_callback( $block_attributes, $content
         'posts_per_page' => -1
     );
     $loop = new WP_Query($args);
-    
-    function order_events_by_registration_deadline($a, $b) {
-        $today = new DateTime('today');
-        $aReg = new DateTime(get_post_custom_values('_hyic_event_registration_deadline', $a->ID)[0]);
-        $bReg = new DateTime(get_post_custom_values('_hyic_event_registration_deadline', $b->ID)[0]);
-    
-        if($aReg > $today && $bReg > $today) return ($aReg<$bReg) ? -1 : 1;
-        else if($aReg < $today && $bReg < $today) return ($aReg>$bReg) ? -1 : 1;
-        else return ($aReg > $today) ? -1 : 1;
-    }
     
     usort($loop->posts, 'order_events_by_registration_deadline');
     $recent_posts = array_slice($loop->posts, 0, 3);
